@@ -12,9 +12,9 @@
 
 using namespace std;
 
-#define N 2000
+#define N 50
 #define ALIGNMENT 16 // 对齐方式为 16 字节
-#define NUM_THREADS 7
+#define NUM_THREADS 8
 
 float** m = NULL;
 void m_reset() {
@@ -119,58 +119,58 @@ void SIMD_LU(float** m) {
     }
 }
 
-//// Pthread 动态线程
-//typedef struct {
-//    int k; //消去的轮次
-//    int t_id; //线程id
-//}threadParam_t;
-//
-//// 线程函数
-//DWORD WINAPI threadFunc(LPVOID param) {
-//    threadParam_t* p = reinterpret_cast<threadParam_t*>(param);
-//    int k = p->k;        // 消去的轮次
-//    int t_id = p->t_id;  // 线程编号
-//    int i = k + t_id + 1;  // 获取自己的计算任务
-//
-//    for (int j = k + 1; j < N; ++j) {
-//        m[i][j] -= m[i][k] * m[k][j];
-//    }
-//    m[i][k] = 0;
-//
-//    return 0;
-//}
-//
-//void pthread_LU() {
-//    for (int k = 0; k < N; ++k) {
-//        // 主线程做除法操作
-//        for (int j = k + 1; j < N; ++j) {
-//            m[k][j] = m[k][j] / m[k][k];
-//        }
-//        m[k][k] = 1.0;
-//
-//        // 创建工作线程，进行消去操作
-//        int worker_count = N - 1 - k; // 工作线程数量
-//        vector<thread> threads(worker_count);
-//        vector<threadParam_t> params(worker_count);
-//
-//        // 分配任务
-//        for (int t_id = 0; t_id < worker_count; ++t_id) {
-//            params[t_id].k = k;
-//            params[t_id].t_id = t_id;
-//        }
-//
-//        // 创建线程
-//        for (int t_id = 0; t_id < worker_count; ++t_id) {
-//            threads[t_id] = thread(threadFunc, &params[t_id]);
-//        }
-//
-//        // 主线程挂起等待所有的工作线程完成此轮消去工作
-//        for (int t_id = 0; t_id < worker_count; ++t_id) {
-//            threads[t_id].join();
-//        }
-//    }
-//
-//}
+// Pthread 动态线程
+typedef struct {
+    int k; //消去的轮次
+    int t_id; //线程id
+}threadParam_t1;
+
+// 线程函数
+DWORD WINAPI threadFunc1(LPVOID param) {
+    threadParam_t1* p = reinterpret_cast<threadParam_t1*>(param);
+    int k = p->k;        // 消去的轮次
+    int t_id = p->t_id;  // 线程编号
+    int i = k + t_id + 1;  // 获取自己的计算任务
+
+    for (int j = k + 1; j < N; ++j) {
+        m[i][j] -= m[i][k] * m[k][j];
+    }
+    m[i][k] = 0;
+
+    return 0;
+}
+
+void pthread_LU() {
+    for (int k = 0; k < N; ++k) {
+        // 主线程做除法操作
+        for (int j = k + 1; j < N; ++j) {
+            m[k][j] = m[k][j] / m[k][k];
+        }
+        m[k][k] = 1.0;
+
+        // 创建工作线程，进行消去操作
+        int worker_count = N - 1 - k; // 工作线程数量
+        vector<thread> threads(worker_count);
+        vector<threadParam_t1> params(worker_count);
+
+        // 分配任务
+        for (int t_id = 0; t_id < worker_count; ++t_id) {
+            params[t_id].k = k;
+            params[t_id].t_id = t_id;
+        }
+
+        // 创建线程
+        for (int t_id = 0; t_id < worker_count; ++t_id) {
+            threads[t_id] = thread(threadFunc1, &params[t_id]);
+        }
+
+        // 主线程挂起等待所有的工作线程完成此轮消去工作
+        for (int t_id = 0; t_id < worker_count; ++t_id) {
+            threads[t_id].join();
+        }
+    }
+
+}
 
 // 静态线程 + 信号量同步版本
 // 定义线程数据结构
@@ -263,14 +263,16 @@ int main() {
     // 计算经过的时间
     elapsedTime = (end.QuadPart - start.QuadPart) * 1000.0 / frequency.QuadPart;
     cout << "普通高斯消去法时间: " << elapsedTime << " ms." << std::endl;
-    // 释放内存
-    freeUnalign();
+
 
 
     //------------------------------------------------------------------------------
     // 优化高斯消去法部分
+    
+
+
     //------------------------------------------------------------------------------
-    // 线程优化
+    // 静态线程优化
     m_reset();
     // 记录开始时间
     QueryPerformanceCounter(&start);
@@ -316,13 +318,26 @@ int main() {
         thread.join();
     }
 
+    // 记录结束时间
+    QueryPerformanceCounter(&end);
+    // 计算经过的时间
+    elapsedTime = (end.QuadPart - start.QuadPart) * 1000.0 / frequency.QuadPart;
+    cout << "静态线程优化高斯消去法时间: " << elapsedTime << " ms." << std::endl;
+
+    //------------------------------------------------------------------------------
+    // 动态线程优化
+    m_reset();
+    // 记录开始时间
+    QueryPerformanceCounter(&start);
+
+    pthread_LU();
 
 
     // 记录结束时间
     QueryPerformanceCounter(&end);
     // 计算经过的时间
     elapsedTime = (end.QuadPart - start.QuadPart) * 1000.0 / frequency.QuadPart;
-    cout << "线程优化高斯消去法时间: " << elapsedTime << " ms." << std::endl;
+    cout << "动态线程优化高斯消去法时间: " << elapsedTime << " ms." << std::endl;
 
     //------------------------------------------------------------------------------
     // omp优化
