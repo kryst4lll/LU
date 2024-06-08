@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\迅雷下载\pthreads-w32-2-9-1-release\pthreads.2;$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\迅雷下载\pthreads-w32-2-9-1-release\Pre-built.2\include</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);D:\迅雷下载\pthreads-w32-2-9-1-release\Pre-built.2\lib</LibraryPath>
+    <IncludePath>D:\迅雷下载\pthreads-w32-2-9-1-release\pthreads.2;$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\迅雷下载\pthreads-w32-2-9-1-release\Pre-built.2\include;C:\Program Files (x86)\Microsoft SDKs\MPI\Include;</IncludePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);D:\迅雷下载\pthreads-w32-2-9-1-release\Pre-built.2\lib;C:\Program Files (x86)\Microsoft SDKs\MPI\Lib\x64;</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>D:\迅雷下载\pthreads-w32-2-9-1-release\Pre-built.2\include;$(IncludePath)</IncludePath>
@@ -111,16 +111,16 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);MPICH_SKIP_MPICXX;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>
-      </AdditionalDependencies>
+      <AdditionalDependencies>msmpi.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
