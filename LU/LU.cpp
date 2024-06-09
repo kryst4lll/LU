@@ -718,5 +718,7 @@ int main(int argc, char* argv[]) {
 
     // 释放内存
     freeUnalign();
+    system("pause");
     return 0;
+    
 }

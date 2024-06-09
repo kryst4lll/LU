@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LU", "LU\LU.vcxproj", "{66C83C64-D338-4FD5-B385-5955DCFB4F15}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "LU_exe", "LU_exe\LU_exe.vdproj", "{9AA1CCC7-782C-42C1-BFC6-3A2F162FBA5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{66C83C64-D338-4FD5-B385-5955DCFB4F15}.Release|x64.Build.0 = Release|x64
 		{66C83C64-D338-4FD5-B385-5955DCFB4F15}.Release|x86.ActiveCfg = Release|Win32
 		{66C83C64-D338-4FD5-B385-5955DCFB4F15}.Release|x86.Build.0 = Release|Win32
+		{9AA1CCC7-782C-42C1-BFC6-3A2F162FBA5D}.Debug|x64.ActiveCfg = Debug
+		{9AA1CCC7-782C-42C1-BFC6-3A2F162FBA5D}.Debug|x86.ActiveCfg = Debug
+		{9AA1CCC7-782C-42C1-BFC6-3A2F162FBA5D}.Release|x64.ActiveCfg = Release
+		{9AA1CCC7-782C-42C1-BFC6-3A2F162FBA5D}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
