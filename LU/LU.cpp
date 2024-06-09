@@ -493,7 +493,7 @@ double LU_mpi_async_avx(int argc, char* argv[]) {  //非阻塞通信+avx
     double start_time = 0;
     double end_time = 0;
     MPI_Init(&argc, &argv);
-    cout << MPI_Wtick();
+    //cout << MPI_Wtick();
     int total = 0;
     int rank = 0;
     int i = 0;
