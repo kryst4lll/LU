@@ -75,7 +75,7 @@ void freeUnalign() {
 // 普通高斯消去法
 void or_LU(float** m){
     for (int k = 0; k < N; k++) {
-        for (int j = 0; j < N; j++) {
+        for (int j = k + 1; j < N; j++) {
             m[k][j] = m[k][j] / m[k][k];
         }
         m[k][k] = 1.0;
