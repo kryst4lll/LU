@@ -628,57 +628,57 @@ int main(int argc, char* argv[]) {
 
 
     //------------------------------------------------------------------------------
-    // 静态线程优化
-    m_reset();
-    // 记录开始时间
-    QueryPerformanceCounter(&start);
+    //// 静态线程优化
+    //m_reset();
+    //// 记录开始时间
+    //QueryPerformanceCounter(&start);
    
-    // 创建线程
-    std::vector<std::thread> threads;
-    std::vector<ThreadParam> params(NUM_THREADS);
-    for (int t_id = 0; t_id < NUM_THREADS; ++t_id) {
-        params[t_id].t_id = t_id;
-        threads.push_back(std::thread(threadFunc, &params[t_id], N, std::ref(m)));
-    }
+    //// 创建线程
+    //std::vector<std::thread> threads;
+    //std::vector<ThreadParam> params(NUM_THREADS);
+    //for (int t_id = 0; t_id < NUM_THREADS; ++t_id) {
+    //    params[t_id].t_id = t_id;
+    //    threads.push_back(std::thread(threadFunc, &params[t_id], N, std::ref(m)));
+    //}
 
-    for (int k = 0; k < N; ++k) {
-        // 主线程做除法操作
-        for (int j = k + 1; j < N; ++j) {
-            m[k][j] = m[k][j] / m[k][k];
-        }
-        m[k][k] = 1.0;
+    //for (int k = 0; k < N; ++k) {
+    //    // 主线程做除法操作
+    //    for (int j = k + 1; j < N; ++j) {
+    //        m[k][j] = m[k][j] / m[k][k];
+    //    }
+    //    m[k][k] = 1.0;
 
-        // 开始唤醒工作线程
-        {
-            std::unique_lock<std::mutex> lck(mtx);
-            ready = true;
-            cv_workerstart[0].notify_all();
-        }
+    //    // 开始唤醒工作线程
+    //    {
+    //        std::unique_lock<std::mutex> lck(mtx);
+    //        ready = true;
+    //        cv_workerstart[0].notify_all();
+    //    }
 
-        // 主线程睡眠（等待所有的工作线程完成此轮消去任务）
-        {
-            std::unique_lock<std::mutex> lck(mtx);
-            cv_main.wait(lck, [&] {return ready; });
-        }
+    //    // 主线程睡眠（等待所有的工作线程完成此轮消去任务）
+    //    {
+    //        std::unique_lock<std::mutex> lck(mtx);
+    //        cv_main.wait(lck, [&] {return ready; });
+    //    }
 
-        // 主线程再次唤醒工作线程进入下一轮次的消去任务
-        {
-            std::unique_lock<std::mutex> lck(mtx);
-            ready = true;
-            cv_workerend[0].notify_all();
-        }
-    }
+    //    // 主线程再次唤醒工作线程进入下一轮次的消去任务
+    //    {
+    //        std::unique_lock<std::mutex> lck(mtx);
+    //        ready = true;
+    //        cv_workerend[0].notify_all();
+    //    }
+    //}
 
-    // 等待所有线程结束
-    for (auto& thread : threads) {
-        thread.join();
-    }
+    //// 等待所有线程结束
+    //for (auto& thread : threads) {
+    //    thread.join();
+    //}
 
-    // 记录结束时间
-    QueryPerformanceCounter(&end);
-    // 计算经过的时间
-    elapsedTime = (end.QuadPart - start.QuadPart) * 1000.0 / frequency.QuadPart;
-    cout << "静态线程优化高斯消去法时间: " << elapsedTime << " ms." << std::endl;
+    //// 记录结束时间
+    //QueryPerformanceCounter(&end);
+    //// 计算经过的时间
+    //elapsedTime = (end.QuadPart - start.QuadPart) * 1000.0 / frequency.QuadPart;
+    //cout << "静态线程优化高斯消去法时间: " << elapsedTime << " ms." << std::endl;
 
     //------------------------------------------------------------------------------
     //// 动态线程优化
@@ -696,19 +696,19 @@ int main(int argc, char* argv[]) {
     //cout << "动态线程优化高斯消去法时间: " << elapsedTime << " ms." << std::endl;
 
     //------------------------------------------------------------------------------
-    // omp优化
-    m_reset();
-    // 记录开始时间
-    QueryPerformanceCounter(&start);
+    //// omp优化
+    //m_reset();
+    //// 记录开始时间
+    //QueryPerformanceCounter(&start);
 
-    omp_LU();
+    //omp_LU();
 
 
-    // 记录结束时间
-    QueryPerformanceCounter(&end);
-    // 计算经过的时间
-    elapsedTime = (end.QuadPart - start.QuadPart) * 1000.0 / frequency.QuadPart;
-    cout << "omp优化高斯消去法时间: " << elapsedTime << " ms." << std::endl;
+    //// 记录结束时间
+    //QueryPerformanceCounter(&end);
+    //// 计算经过的时间
+    //elapsedTime = (end.QuadPart - start.QuadPart) * 1000.0 / frequency.QuadPart;
+    //cout << "omp优化高斯消去法时间: " << elapsedTime << " ms." << std::endl;
 
     //------------------------------------------------------------------------------
     //MPI
